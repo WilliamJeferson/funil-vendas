@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academia Forte · Funil de Relacionamento</title>
+<style>
+  :root{
+    --blue-900:#0d3f9e;
+    --blue-800:#1149b3;
+    --blue-700:#1656c9;
+    --blue-600:#1a63e0;
+    --blue-500:#2f7bf0;
+    --blue-50:#eef4ff;
+    --ink-900:#1a2333;
+    --ink-700:#3c465a;
+    --ink-500:#6b7688;
+    --ink-300:#a3acbd;
+    --line:#e6e9f0;
+    --bg:#f4f6fb;
+    --card:#ffffff;
+    --amber:#f5a524;
+    --violet:#7c4dee;
+    --green:#1fae63;
+    --red:#e6483f;
+    --shadow:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+    --shadow-lift:0 8px 20px rgba(16,39,112,.16);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Segoe UI',Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink-900);}
+  a{text-decoration:none;color:inherit;}
+
+  /* ===== Top bar ===== */
+  .topbar{
+    background:linear-gradient(90deg,var(--blue-800),var(--blue-600));
+    color:#fff; display:flex; align-items:center; padding:0 24px; height:60px;
+    gap:28px; position:sticky; top:0; z-index:40; box-shadow:var(--shadow);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px;white-space:nowrap;}
+  .brand .mark{
+    width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.18);
+    display:flex;align-items:center;justify-content:center;font-weight:800;
+  }
+  .nav{display:flex;gap:4px;flex:1;overflow-x:auto;}
+  .nav a{
+    padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;
+    color:rgba(255,255,255,.78);white-space:nowrap;transition:.15s;
+  }
+  .nav a:hover{color:#fff;background:rgba(255,255,255,.08);}
+  .nav a.active{color:#fff;background:rgba(255,255,255,.16);font-weight:700;}
+  .top-actions{display:flex;align-items:center;gap:16px;}
+  .icon-btn{
+    width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#fff;opacity:.85;cursor:pointer;
+  }
+  .icon-btn:hover{opacity:1;background:rgba(255,255,255,.1);}
+  .avatar-user{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;}
+  .avatar-user .ava{
+    width:30px;height:30px;border-radius:50%;background:#c9a876;
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#4a3418;
+  }
+
+  /* ===== breadcrumb ===== */
+  .breadcrumb-wrap{background:#fff;border-bottom:1px solid var(--line);padding:18px 28px 0;}
+  .crumbs{font-size:13px;color:var(--ink-500);display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+  .crumbs b{color:var(--ink-900);}
+  h1.page-title{font-size:21px;margin:0 0 12px;padding-bottom:12px;border-bottom:3px solid var(--blue-600);display:inline-block;}
+
+  /* ===== toolbar ===== */
+  .toolbar{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px 28px;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;border:none;border-radius:9px;
+    font-size:14px;font-weight:600;cursor:pointer;padding:10px 16px;transition:.15s;
+  }
+  .btn-primary{background:var(--blue-600);color:#fff;box-shadow:var(--shadow);}
+  .btn-primary:hover{background:var(--blue-700);}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink-700);}
+  .btn-ghost:hover{border-color:var(--blue-500);color:var(--blue-600);}
+  .spacer{flex:1;}
+  .search-box{
+    display:flex;align-items:center;background:#fff;border:1px solid var(--line);
+    border-radius:9px;padding:0 12px;min-width:220px;height:40px;
+  }
+  .search-box input{border:none;outline:none;flex:1;font-size:14px;padding:0 8px;background:transparent;}
+  .search-box svg{flex-shrink:0;color:var(--ink-300);}
+
+  /* ===== board ===== */
+  .board-scroll{overflow-x:auto;padding:4px 28px 32px;}
+  .board{display:flex;gap:16px;min-height:60vh;}
+  .column{
+    background:#eef1f7;border-radius:12px;min-width:280px;max-width:280px;
+    display:flex;flex-direction:column;max-height:calc(100vh - 230px);
+  }
+  .col-head{padding:14px 14px 10px;border-top:4px solid var(--accent,var(--blue-600));border-radius:12px 12px 0 0;}
+  .col-title-row{display:flex;align-items:center;gap:8px;}
+  .col-title{font-size:14.5px;font-weight:700;color:var(--ink-900);}
+  .col-count{
+    background:var(--accent,var(--blue-600));color:#fff;font-size:11.5px;font-weight:700;
+    border-radius:20px;padding:1px 9px;
+  }
+  .col-total{font-size:12px;color:var(--ink-500);margin-top:4px;font-weight:600;}
+  .col-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;}
+  .col-body::-webkit-scrollbar{width:6px;}
+  .col-body::-webkit-scrollbar-thumb{background:#cfd6e4;border-radius:3px;}
+  .col-drop-hint{
+    border:2px dashed var(--blue-400,#a9c4f5);border-radius:10px;padding:16px;
+    text-align:center;color:var(--ink-300);font-size:12.5px;display:none;
+  }
+  .column.drag-over .col-drop-hint{display:block;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:12px;cursor:grab;box-shadow:var(--shadow);transition:.15s;position:relative;
+  }
+  .card:hover{box-shadow:var(--shadow-lift);border-color:#cfd9ee;}
+  .card.dragging{opacity:.4;}
+  .card-top{display:flex;align-items:center;gap:10px;}
+  .avatar{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
+    justify-content:center;font-size:12.5px;font-weight:800;color:#fff;
+  }
+  .card-name{font-size:13.8px;font-weight:700;color:var(--ink-900);line-height:1.2;}
+  .card-meta{margin-top:4px;font-size:12px;color:var(--ink-500);line-height:1.5;}
+  .card-status{margin-left:auto;color:var(--ink-300);flex-shrink:0;cursor:pointer;padding:2px;}
+  .card-status:hover{color:var(--ink-700);}
+  .card-detail{padding-left:44px;margin-top:2px;}
+  .card-detail div{font-size:12px;color:var(--ink-500);line-height:1.55;}
+  .card-detail b{color:var(--ink-700);font-weight:600;}
+  .card-menu{position:absolute;top:8px;right:8px;display:none;background:#fff;border:1px solid var(--line);
+    border-radius:8px;box-shadow:var(--shadow-lift);z-index:5;overflow:hidden;min-width:150px;}
+  .card-menu.open{display:block;}
+  .card-menu button{
+    display:block;width:100%;text-align:left;border:none;background:none;padding:9px 12px;
+    font-size:12.5px;cursor:pointer;color:var(--ink-700);
+  }
+  .card-menu button:hover{background:var(--blue-50);color:var(--blue-700);}
+  .card-menu button.danger:hover{background:#fdeceb;color:var(--red);}
+
+  .empty-col{padding:26px 8px;text-align:center;color:var(--ink-300);font-size:12.5px;}
+
+  /* ===== modal ===== */
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:14px;width:100%;max-width:420px;padding:24px;box-shadow:var(--shadow-lift);}
+  .modal h2{margin:0 0 4px;font-size:18px;}
+  .modal p.sub{margin:0 0 18px;color:var(--ink-500);font-size:13px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-700);margin-bottom:6px;}
+  .field input,.field select{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;
+    outline:none;font-family:inherit;
+  }
+  .field input:focus,.field select:focus{border-color:var(--blue-500);}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink-900);color:#fff;padding:12px 20px;border-radius:9px;font-size:13.5px;
+    box-shadow:var(--shadow-lift);opacity:0;pointer-events:none;transition:.25s;z-index:200;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ===== cadastro modal (Adicionando Cadastro) ===== */
+  .overlay{align-items:flex-start;overflow-y:auto;padding:36px 20px;}
+  .cadastro-modal{
+    background:#fff;border-radius:12px;width:100%;max-width:940px;margin:auto;
+    box-shadow:var(--shadow-lift);overflow:hidden;
+  }
+  .cadastro-header{
+    background:linear-gradient(90deg,var(--blue-700),var(--blue-600));color:#fff;
+    padding:16px 22px;display:flex;align-items:center;justify-content:space-between;
+    font-size:15px;font-weight:700;
+  }
+  .close-x{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;line-height:1;opacity:.85;padding:0;}
+  .close-x:hover{opacity:1;}
+  .cadastro-body{display:flex;align-items:stretch;}
+  .cadastro-sidebar{
+    width:220px;flex-shrink:0;background:#fafbfd;border-right:1px solid var(--line);
+    padding:28px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;
+  }
+  .avatar-upload{
+    width:88px;height:88px;border-radius:50%;background:#eaf1fd;border:1px solid #dce6f7;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;color:#9fb7e8;overflow:hidden;flex-shrink:0;
+  }
+  .avatar-upload:hover{background:#e0eaf9;}
+  .avatar-upload img{width:100%;height:100%;object-fit:cover;}
+  .sidebar-title{margin-top:12px;font-size:14.5px;font-weight:700;color:var(--ink-900);word-break:break-word;}
+  .cadastro-sidebar hr{width:100%;border:none;border-top:1px dashed var(--line);margin:18px 0;}
+  .sidebar-info{width:100%;text-align:left;display:flex;flex-direction:column;gap:14px;margin-bottom:26px;}
+  .info-label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.4px;color:var(--ink-300);margin-bottom:3px;}
+  .info-value{font-size:12.5px;color:var(--ink-500);font-style:italic;}
+  .btn-configurar{
+    margin-top:auto;background:#eef1f7;border:none;border-radius:8px;padding:9px 14px;
+    font-size:11px;font-weight:700;letter-spacing:.3px;color:var(--ink-700);cursor:pointer;
+    display:flex;align-items:center;gap:6px;
+  }
+  .btn-configurar:hover{background:#e2e7f1;}
+
+  .cadastro-main{flex:1;padding:22px 26px 26px;min-width:0;}
+  .cadastro-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:20px;}
+  .tab-btn{
+    display:flex;align-items:center;gap:7px;background:none;border:none;padding:10px 4px 12px;
+    font-size:13.5px;font-weight:600;color:var(--ink-500);cursor:pointer;border-bottom:3px solid transparent;
+    margin-right:26px;
+  }
+  .tab-btn:hover{color:var(--ink-900);}
+  .tab-btn.active{color:var(--ink-900);border-bottom-color:var(--blue-600);}
+  .tab-btn svg{flex-shrink:0;}
+
+  .pf-pj{display:flex;gap:26px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--line);font-size:13.5px;color:var(--ink-700);}
+  .pf-pj label{display:flex;align-items:center;gap:7px;cursor:pointer;}
+  .pf-pj input{accent-color:var(--blue-600);}
+
+  .form-row-2{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:16px;}
+  .form-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:16px;}
+  .help-q{
+    display:inline-flex;width:15px;height:15px;border-radius:50%;background:var(--blue-50);
+    color:var(--blue-600);font-size:10px;align-items:center;justify-content:center;margin-left:4px;
+  }
+
+  .btn-salvar{
+    background:var(--green);color:#fff;border:none;border-radius:8px;padding:11px 22px;
+    font-size:13px;font-weight:700;letter-spacing:.3px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  }
+  .btn-salvar:hover{background:#188e52;}
+  .btn-voltar{background:none;border:none;color:var(--ink-500);font-size:13px;font-weight:700;letter-spacing:.3px;cursor:pointer;padding:0 4px;}
+  .btn-voltar:hover{color:var(--ink-900);}
+
+  @media (max-width:720px){
+    .nav{display:none;}
+    .breadcrumb-wrap,.toolbar{padding-left:16px;padding-right:16px;}
+    .board-scroll{padding-left:16px;padding-right:16px;}
+    .cadastro-body{flex-direction:column;}
+    .cadastro-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--line);padding:20px;}
+    .form-row-2,.form-row-3{grid-template-columns:1fr;}
+    .visita-top{flex-wrap:wrap;}
+  }
+
+  /* ===== visita (card detail) modal ===== */
+  .visita-modal{
+    background:#fff;border-radius:12px;width:100%;max-width:760px;margin:auto;
+    box-shadow:var(--shadow-lift);overflow:hidden;
+  }
+  .visita-header{
+    background:linear-gradient(90deg,var(--blue-700),var(--blue-600));color:#fff;
+    padding:16px 22px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:700;
+  }
+  .visita-id{font-size:12px;font-weight:600;color:rgba(255,255,255,.75);margin-left:6px;}
+  .visita-top{
+    display:flex;align-items:center;gap:12px;padding:18px 24px 8px;flex-wrap:wrap;
+  }
+  .visita-avatar{
+    width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:800;color:#fff;
+  }
+  .visita-name-wrap{margin-right:auto;}
+  .visita-name{font-size:15px;font-weight:700;color:var(--ink-900);}
+  .visita-dots{color:var(--ink-300);cursor:pointer;padding:4px;margin-right:14px;}
+  .visita-dots:hover{color:var(--ink-700);}
+  .visita-inline-select{
+    display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-700);font-weight:600;position:relative;
+  }
+  .visita-inline-select .dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex-shrink:0;}
+  .visita-inline-select select{
+    border:none;background:none;font-size:13px;font-weight:700;color:var(--ink-900);cursor:pointer;
+    outline:none;appearance:none;-webkit-appearance:none;padding-right:16px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b7688' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;background-position:right 0 center;
+  }
+  .visita-inline-select.status{color:var(--blue-600);}
+  .visita-inline-select.status svg{flex-shrink:0;}
+  .visita-divider{border:none;border-top:1px solid var(--line);margin:14px 24px 0;}
+  .visita-drag-banner{
+    margin:12px 24px 0;padding:10px 14px;background:var(--blue-50);color:var(--blue-700);
+    border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid #cfe0fb;
+  }
+  .visita-body{padding:18px 24px 24px;}
+  .plano-escolhido{margin:0 24px 4px;padding:13px 15px;background:#f0f8f2;border:1px solid #cce8d4;border-radius:9px;color:#225b36;font-size:13px;}
+  .plano-escolhido strong{display:block;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.35px;color:#39734b;}
+
+  .tag-input{
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;
+    padding:8px 10px;min-height:44px;
+  }
+  .tag-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag-chip{
+    display:flex;align-items:center;gap:6px;background:var(--blue-50);color:var(--blue-700);
+    font-size:12.5px;font-weight:600;padding:5px 8px;border-radius:6px;
+  }
+  .tag-chip button{background:none;border:none;color:var(--blue-700);cursor:pointer;font-size:13px;line-height:1;padding:0;opacity:.7;}
+  .tag-chip button:hover{opacity:1;}
+  .tag-input select{border:none;outline:none;font-size:12.5px;color:var(--ink-500);background:none;flex:1;min-width:150px;cursor:pointer;}
+
+  .agendamento-row{background:#f6f9ff;border:1px dashed var(--blue-500);border-radius:10px;padding:14px 14px 0;margin-left:0;margin-right:0;}
+  .agendamento-row #vAgendLabel{color:var(--ink-500);font-size:12px;background:#fff;cursor:default;}
+
+  .obs-label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .char-count{font-size:11.5px;color:var(--ink-300);}
+  textarea{
+    width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13.5px;
+    font-family:inherit;resize:vertical;outline:none;
+  }
+  textarea:focus{border-color:var(--blue-500);}
+
+  .btn-excluir{
+    background:#e6483f;color:#fff;border:none;border-radius:8px;padding:11px 20px;
+    font-size:13px;font-weight:700;letter-spacing:.3px;cursor:pointer;
+  }
+  .btn-excluir:hover{background:#c93b33;}
+
+  /* ===== contato / WhatsApp modal (Negociação) ===== */
+  .contato-modal{
+    background:#fff;border-radius:12px;width:100%;max-width:760px;margin:auto;
+    box-shadow:var(--shadow-lift);overflow:hidden;
+  }
+  .contato-header{
+    background:linear-gradient(90deg,var(--blue-700),var(--blue-600));color:#fff;
+    padding:16px 22px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:700;
+  }
+  .contato-top{display:flex;align-items:center;gap:12px;padding:18px 24px 8px;flex-wrap:wrap;}
+  .contato-avatar{
+    width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:800;color:#fff;
+  }
+  .contato-name-wrap{margin-right:auto;}
+  .contato-name{font-size:15px;font-weight:700;color:var(--ink-900);}
+  .contato-whatsapp{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink-700);}
+  .wa-icon{
+    width:26px;height:26px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .contato-body{padding:18px 24px 24px;}
+  .link-motivo{color:var(--blue-600);font-size:12px;font-weight:600;cursor:pointer;}
+  .link-motivo:hover{text-decoration:underline;}
+  .motivo-field{position:relative;}
+  .motivo-panel{
+    position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fff;border:1px solid var(--line);
+    border-radius:8px;box-shadow:var(--shadow-lift);z-index:20;overflow:hidden;
+  }
+  .motivo-panel button{
+    display:block;width:100%;text-align:left;border:none;background:none;padding:9px 12px;
+    font-size:12.5px;cursor:pointer;color:var(--ink-700);border-bottom:1px solid var(--line);
+  }
+  .motivo-panel button:last-child{border-bottom:none;}
+  .motivo-panel button:hover{background:var(--blue-50);color:var(--blue-700);}
+  .field-hint{font-size:11px;color:var(--ink-300);font-style:italic;white-space:nowrap;}
+  .ct-agendar-row{background:#f6f9ff;border:1px dashed var(--blue-500);border-radius:10px;padding:14px 14px 0;margin-bottom:18px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="mark">S</span> ACADEMIA FORTE</div>
+  <nav class="nav">
+    <a href="#">Administrativo</a>
+    <a href="#">Financeiro</a>
+    <a href="#" class="active">Relacionamento</a>
+    <a href="#">Acessos</a>
+    <a href="#">Vendas</a>
+    <a href="#">Treinos</a>
+    <a href="#">Avaliações</a>
+    <a href="#">Relatórios</a>
+  </nav>
+  <div class="top-actions">
+    <div class="icon-btn" title="Buscar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="icon-btn" title="Mensagens">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    </div>
+    <div class="icon-btn" title="Notificações">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="avatar-user"><span class="ava">W</span> William</div>
+  </div>
+</div>
+
+<div class="breadcrumb-wrap">
+  <div class="crumbs">Relacionamento <span>›</span> <b>Funil de Relacionamento</b></div>
+  <h1 class="page-title">Funil de Relacionamento</h1>
+</div>
+
+<div class="toolbar">
+  <button class="btn btn-primary" id="addVisitorBtn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Adicionar visitante
+  </button>
+  <button class="btn btn-ghost">Todas as unidades <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></button>
+  <button class="btn btn-ghost">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Período
+  </button>
+  <button class="btn btn-ghost">Usuários <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></button>
+  <div class="spacer"></div>
+  <div class="search-box">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Buscar contato...">
+  </div>
+</div>
+
+<div class="board-scroll">
+  <div class="board" id="board"></div>
+</div>
+
+<!-- Cadastro modal -->
+<div class="overlay" id="overlay">
+  <div class="cadastro-modal">
+    <div class="cadastro-header">
+      <span>Adicionando Cadastro</span>
+      <button class="close-x" id="closeModalX" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="cadastro-body">
+      <aside class="cadastro-sidebar">
+        <div class="avatar-upload" id="avatarUpload" title="Alterar foto">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <input type="file" id="avatarFile" accept="image/*" hidden>
+        <div class="sidebar-title" id="sidebarTitle">Cadastro Visitante</div>
+        <hr>
+        <div class="sidebar-info">
+          <div>
+            <span class="info-label">VÍNCULOS</span>
+            <span class="info-value">Não existem vínculos</span>
+          </div>
+          <div>
+            <span class="info-label">RESPONSÁVEIS</span>
+            <span class="info-value">Nenhum responsável</span>
+          </div>
+        </div>
+        <button class="btn-configurar" id="configurarBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          CONFIGURAR
+        </button>
+      </aside>
+
+      <main class="cadastro-main">
+        <div class="cadastro-tabs">
+          <button class="tab-btn active" data-tab="info">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2f7bf0" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            Informações
+          </button>
+          <button class="tab-btn" data-tab="endereco">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f5a524" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Endereço
+          </button>
+          <button class="tab-btn" data-tab="contatos">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1fae63" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg>
+            Contatos
+          </button>
+        </div>
+
+        <div class="tab-panel" data-panel="info">
+          <div class="pf-pj">
+            <label><input type="radio" name="tipoPessoa" value="fisica" checked> Pessoa Física</label>
+            <label><input type="radio" name="tipoPessoa" value="juridica"> Pessoa Jurídica</label>
+          </div>
+          <div class="form-row-2">
+            <div class="field"><label id="lblNomeCompleto">Nome Completo *</label><input type="text" id="fNomeCompleto" placeholder="Nome completo do contato"></div>
+            <div class="field"><label id="lblPrimeiroNome">Primeiro Nome</label><input type="text" id="fPrimeiroNome"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="field"><label>E-mail</label><input type="email" id="fEmail"></div>
+            <div class="field"><label>Sexo *</label>
+              <select id="fSexo"><option value="">Selecione</option><option>Feminino</option><option>Masculino</option><option>Prefiro não informar</option></select>
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="field"><label id="lblCpf">CPF</label><input type="text" id="fCpf" placeholder="000.000.000-00"></div>
+            <div class="field"><label>Identificação ou RG</label><input type="text" id="fRg"></div>
+            <div class="field"><label>Nascimento</label><input type="text" id="fNascimento" placeholder="dd/mm/aaaa"></div>
+          </div>
+          <div class="form-row-3">
+            <div class="field"><label>Estado Civil</label>
+              <select id="fEstadoCivil"><option>Selecione</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+            </div>
+            <div class="field"><label>Telefone 1</label><input type="text" id="fTel1" placeholder="(00) 00000-0000"></div>
+            <div class="field"><label>Telefone 2</label><input type="text" id="fTel2" placeholder="(00) 00000-0000"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="field">
+              <label>Tags <span class="help-q">?</span></label>
+              <select id="fTags">
+                <option value="">Selecione</option>
+                <option>Interessado em musculação</option>
+                <option>Interessado em aulas</option>
+                <option>Indicação de aluno</option>
+                <option>Reativação</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Usuário Responsável</label>
+              <select id="fResponsavel">
+                <option value="">Selecione</option>
+                <option>William</option>
+                <option>Ana Paula</option>
+                <option>Carlos Eduardo</option>
+                <option>Fernanda Lima</option>
+                <option>Rodrigo Alves</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="endereco" hidden>
+          <div class="form-row-3">
+            <div class="field"><label>CEP</label><input type="text" id="fCep" placeholder="00000-000"></div>
+            <div class="field" style="grid-column:span 2"><label>Endereço</label><input type="text" id="fEndereco"></div>
+          </div>
+          <div class="form-row-3">
+            <div class="field"><label>Número</label><input type="text" id="fNumero"></div>
+            <div class="field"><label>Complemento</label><input type="text" id="fComplemento"></div>
+            <div class="field"><label>Bairro</label><input type="text" id="fBairro"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="field"><label>Cidade</label><input type="text" id="fCidade"></div>
+            <div class="field"><label>Estado</label>
+              <select id="fEstado">
+                <option>Selecione</option>
+                <option>MG</option><option>SP</option><option>RJ</option><option>PR</option><option>RS</option><option>BA</option><option>Outro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="contatos" hidden>
+          <div class="form-row-2">
+            <div class="field"><label>Telefone Celular</label><input type="text" id="fCelular" placeholder="(00) 00000-0000"></div>
+            <div class="field"><label>Telefone Residencial</label><input type="text" id="fResidencial" placeholder="(00) 0000-0000"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="field"><label>E-mail secundário</label><input type="email" id="fEmail2"></div>
+            <div class="field"><label>Contato de emergência</label><input type="text" id="fEmergencia"></div>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="justify-content:flex-start;">
+          <button class="btn-salvar" id="confirmAdd">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            SALVAR
+          </button>
+          <button class="btn-voltar" id="cancelAdd">VOLTAR</button>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Visit / card detail modal -->
+<div class="overlay" id="overlay2">
+  <div class="visita-modal">
+    <div class="visita-header">
+      <div><span>Editando Visita</span> <span class="visita-id" id="vId"></span></div>
+      <button class="close-x" id="closeModal2X" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="visita-top">
+      <div class="visita-avatar" id="vAvatar"></div>
+      <div class="visita-name-wrap">
+        <div class="visita-name" id="vName"></div>
+      </div>
+      <div class="visita-dots" id="vDotsMenu" title="Opções">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg>
+      </div>
+      <div class="visita-inline-select">
+        <span class="dot" id="vInteresseDot"></span>
+        <span>Interesse</span>
+        <select id="vInteresse">
+          <option value="Baixo">Baixo</option>
+          <option value="Médio">Médio</option>
+          <option value="Alto">Alto</option>
+        </select>
+      </div>
+      <div class="visita-inline-select status" id="vStatusWrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+        <select id="vStatus">
+          <option value="Aguardando">Aguardando</option>
+          <option value="Realizada">Realizada</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
+      </div>
+    </div>
+    <hr class="visita-divider">
+    <div class="visita-drag-banner" id="vDragBanner" style="display:none;"></div>
+
+    <div class="plano-escolhido" id="vPlanoEscolhido" hidden>
+      <strong>Plano escolhido na academia</strong>
+      <span id="vPlanoEscolhidoNome"></span>
+    </div>
+    <div class="visita-body">
+      <div class="field">
+        <label>Modalidades de Interesse *</label>
+        <div class="tag-input" id="vTagInput">
+          <div class="tag-chips" id="vChips"></div>
+          <select id="vAddModalidade">
+            <option value="">+ Adicionar modalidade</option>
+            <option>Musculação</option>
+            <option>Funcional</option>
+            <option>Aulas coletivas</option>
+            <option>Crossfit</option>
+            <option>Pilates</option>
+            <option>Natação</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="field"><label>Onde nos conheceu? *</label>
+          <select id="vOrigem">
+            <option>Indicação</option>
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>Site</option>
+            <option>WhatsApp</option>
+            <option>Presencial</option>
+          </select>
+        </div>
+        <div class="field"><label>Data *</label><input type="date" id="vData"></div>
+        <div class="field"><label>Hora *</label><input type="time" id="vHora"></div>
+      </div>
+
+      <div class="form-row-3 agendamento-row">
+        <div class="field"><label>Agendamento da Visita *</label>
+          <input type="text" id="vAgendLabel" value="Dia da visita do aluno na academia" readonly>
+        </div>
+        <div class="field"><label>Data da Visita *</label><input type="date" id="vAgendData"></div>
+        <div class="field"><label>Hora da Visita *</label><input type="time" id="vAgendHora"></div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="field"><label>Telefone 1 *</label><input type="text" id="vTel1" placeholder="(00) 00000-0000"></div>
+        <div class="field"><label>Telefone 2</label><input type="text" id="vTel2" placeholder="(00) 00000-0000"></div>
+      </div>
+
+      <div class="field">
+        <div class="obs-label-row">
+          <label>Observação</label>
+          <span class="char-count" id="vObsCount">0 de 1000</span>
+        </div>
+        <textarea id="vObs" maxlength="1000" rows="3"></textarea>
+      </div>
+
+      <div class="modal-actions" style="justify-content:flex-start;">
+        <button class="btn-salvar" id="vSalvar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          SALVAR
+        </button>
+        <button class="btn-excluir" id="vExcluir">EXCLUIR</button>
+        <button class="btn-voltar" id="vVoltar">VOLTAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WhatsApp contact modal (Negociação column) -->
+<div class="overlay" id="overlay3">
+  <div class="contato-modal">
+    <div class="contato-header">
+      <span>Adicionando Contato</span>
+      <button class="close-x" id="closeModal3X" aria-label="Fechar">&times;</button>
+    </div>
+
+    <div class="contato-top">
+      <div class="contato-avatar" id="ctAvatar"></div>
+      <div class="contato-name-wrap">
+        <div class="contato-name" id="ctName"></div>
+      </div>
+      <div class="contato-whatsapp">
+        <span>WhatsApp</span>
+        <span class="wa-icon">
+          <svg width="15" height="15" viewBox="0 0 32 32" fill="#fff"><path d="M16.02 3C9.4 3 4 8.4 4 15.02c0 2.35.62 4.56 1.79 6.5L3.98 29l7.63-1.78a12.9 12.9 0 0 0 4.41.78h.01c6.62 0 12.02-5.4 12.02-12.02C28.05 8.4 22.65 3 16.02 3zm0 21.86h-.01c-1.44 0-2.85-.38-4.08-1.1l-.29-.17-4.53 1.06 1.08-4.41-.19-.3a9.83 9.83 0 0 1-1.51-5.24c0-5.44 4.43-9.87 9.88-9.87 2.64 0 5.12 1.03 6.98 2.9a9.8 9.8 0 0 1 2.89 6.98c0 5.44-4.43 9.87-9.87 9.87z"/><path d="M21.53 17.6c-.29-.15-1.74-.86-2.01-.96-.27-.1-.47-.15-.66.15-.2.29-.76.96-.93 1.16-.17.2-.34.22-.63.07-.29-.15-1.24-.46-2.36-1.46-.87-.78-1.46-1.74-1.63-2.03-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.49.1-.2.05-.37-.02-.51-.07-.15-.66-1.59-.9-2.18-.24-.57-.48-.49-.66-.5h-.56c-.2 0-.51.07-.78.37-.27.29-1.02 1-1.02 2.44s1.05 2.83 1.19 3.03c.15.2 2.06 3.14 4.98 4.4.7.3 1.24.48 1.67.61.7.22 1.34.19 1.84.12.56-.08 1.74-.71 1.98-1.4.24-.68.24-1.27.17-1.4-.07-.12-.26-.2-.55-.34z"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <hr class="visita-divider">
+
+    <div class="contato-body">
+      <div class="pf-pj">
+        <label><input type="radio" name="ctModo" value="agora" checked> Enviar Agora</label>
+        <label><input type="radio" name="ctModo" value="agendar"> Agendar</label>
+      </div>
+
+      <div class="form-row-2 ct-agendar-row" id="ctAgendarRow" hidden>
+        <div class="field"><label>Data do Envio *</label><input type="date" id="ctData"></div>
+        <div class="field"><label>Hora do Envio *</label><input type="time" id="ctHora"></div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="field motivo-field">
+          <div class="obs-label-row">
+            <label>Motivo *</label>
+            <span class="link-motivo" id="ctSelecionarMotivo">Selecionar Motivo</span>
+          </div>
+          <input type="text" id="ctMotivo" placeholder="Descreva o motivo do contato" autocomplete="off">
+          <div class="motivo-panel" id="ctMotivoPanel" hidden>
+            <button type="button" data-v="Confirmação de pagamento">Confirmação de pagamento</button>
+            <button type="button" data-v="Renovação atrasada">Renovação atrasada</button>
+            <button type="button" data-v="Envio de proposta">Envio de proposta</button>
+            <button type="button" data-v="Lembrete de aula experimental">Lembrete de aula experimental</button>
+            <button type="button" data-v="Follow-up comercial">Follow-up comercial</button>
+          </div>
+        </div>
+        <div class="field"><label>Celular *</label><input type="text" id="ctCelular" placeholder="(00) 00000-0000"></div>
+        <div class="field"><label>Prioridade *</label>
+          <select id="ctPrioridade">
+            <option>Baixa</option>
+            <option selected>Normal</option>
+            <option>Alta</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="obs-label-row">
+          <label>Mensagem * <span class="char-count" id="ctMsgCount">0 de 500</span></label>
+          <span class="field-hint">Para ser enviada via WhatsApp</span>
+        </div>
+        <textarea id="ctMensagem" maxlength="500" rows="4" placeholder="Escreva a mensagem..."></textarea>
+      </div>
+
+      <div class="field">
+        <div class="obs-label-row">
+          <label>Observação <span class="char-count" id="ctObsCount">0 de 500</span></label>
+          <span class="field-hint">Exibida nos registros do contato</span>
+        </div>
+        <textarea id="ctObs" maxlength="500" rows="3"></textarea>
+      </div>
+
+      <div class="modal-actions" style="justify-content:flex-start;">
+        <button class="btn-salvar" id="ctSalvar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          SALVAR
+        </button>
+        <button class="btn-voltar" id="ctVoltar">VOLTAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- Data model ---------- */
+const COLUMNS = [
+  {id:'novo', title:'Visitante', color:'var(--blue-600)'},
+  {id:'agendamento', title:'Agendamento de aulas', color:'var(--amber)'},
+  {id:'negociacao', title:'Negociação', color:'#0d3f9e'},
+  {id:'fechado', title:'Fechamento', color:'var(--green)'},
+  {id:'perda', title:'Perda', color:'var(--red)'},
+];
+
+const AVATAR_COLORS = ['#7c4dee','#e6483f','#f5a524','#1fae63','#2f7bf0','#c94fb0','#0d9488','#b45309'];
+function colorFor(name){ let h=0; for(const c of name) h=c.charCodeAt(0)+((h<<5)-h); return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length]; }
+function initials(name){ return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+let cards = [
+  {id:c(), col:'novo', name:'Mariana Pereira', line1:'Origem: Instagram', line2:'Hoje, 09:15', value:0},
+  {id:c(), col:'novo', name:'João Resende', line1:'Origem: Indicação', line2:'Ontem, 16:40', value:0},
+  {id:c(), col:'novo', name:'Amanda Costa', line1:'Origem: Facebook', line2:'Ontem, 11:22', value:0},
+  {id:c(), col:'novo', name:'Lucas Ferreira', line1:'Origem: Site', line2:'11/05/2025', value:0},
+
+  {id:c(), col:'agendamento', name:'Rafael Santos', line1:'Agendado: 14/05/2025 · 18:00', line2:'Hoje, 10:30', value:0},
+  {id:c(), col:'agendamento', name:'Beatriz Vieira', line1:'Agendado: 15/05/2025 · 07:00', line2:'Hoje, 09:40', value:0},
+  {id:c(), col:'agendamento', name:'Matheus Tavares', line1:'Agendado: 16/05/2025 · 19:00', line2:'Ontem, 17:20', value:0},
+  {id:c(), col:'agendamento', name:'Carla Lima', line1:'Agendado: 17/05/2025 · 09:00', line2:'11/05/2025', value:0},
+
+  {id:c(), col:'agendamento', name:'Fernanda Nunes', line1:'Última aula: 13/05/2025', line2:'Hoje, 08:50', value:0},
+  {id:c(), col:'agendamento', name:'Diego Gonçalves', line1:'Última aula: 12/05/2025', line2:'Ontem, 20:15', value:0},
+  {id:c(), col:'agendamento', name:'Larissa Souza', line1:'Última aula: 13/05/2025', line2:'Ontem, 18:30', value:0},
+  {id:c(), col:'agendamento', name:'Paulo Victor', line1:'Última aula: 11/05/2025', line2:'10/05/2025', value:0},
+
+  {id:c(), col:'negociacao', name:'Thiago Henrique', line1:'Plano: Musculação', line2:'Interesse: R$ 99,90/mês · Hoje, 11:20', value:99.90},
+  {id:c(), col:'negociacao', name:'Isabela Silva', line1:'Plano: Musculação + Aulas', line2:'Interesse: R$ 159,90/mês · Ontem, 14:10', value:159.90},
+  {id:c(), col:'negociacao', name:'Willian Lopes', line1:'Plano: Funcional', line2:'Interesse: R$ 129,90/mês · 10/05/2025', value:129.90},
+
+  {id:c(), col:'fechado', name:'Ana Martins', line1:'Plano: Musculação', line2:'Valor: R$ 99,90/mês · Hoje, 09:30', value:99.90},
+  {id:c(), col:'fechado', name:'Rodrigo Prado', line1:'Plano: Musculação + Aulas', line2:'Valor: R$ 398,00/mês · Ontem, 16:00', value:398.00},
+
+  {id:c(), col:'perda', name:'Gabriel Barbosa', line1:'Motivo: Preço', line2:'Perdido em: 12/05/2025', value:0},
+  {id:c(), col:'perda', name:'Juliana Mendes', line1:'Motivo: Mudança de cidade', line2:'Perdido em: 10/05/2025', value:0},
+];
+
+function c(){ return 'id'+Math.random().toString(36).slice(2,9); }
+
+/* ---------- Render ---------- */
+const board = document.getElementById('board');
+let searchTerm = '';
+
+function render(){
+  board.innerHTML = '';
+  COLUMNS.forEach(col=>{
+    const list = cards.filter(cd=> cd.col===col.id && cd.name.toLowerCase().includes(searchTerm));
+
+    const colEl = document.createElement('div');
+    colEl.className='column';
+    colEl.style.setProperty('--accent', col.color);
+    colEl.dataset.col = col.id;
+
+    colEl.innerHTML = `
+      <div class="col-head">
+        <div class="col-title-row">
+          <span class="col-title">${col.title}</span>
+          <span class="col-count">${list.length}</span>
+        </div>
+      </div>
+      <div class="col-body" data-col="${col.id}">
+        ${list.length ? '' : '<div class="empty-col">Nenhum contato aqui</div>'}
+      </div>
+      <div class="col-drop-hint">Soltar aqui</div>
+    `;
+    const body = colEl.querySelector('.col-body');
+    list.forEach(cd=> body.appendChild(renderCard(cd)));
+    board.appendChild(colEl);
+
+    // drag & drop targets
+    body.addEventListener('dragover', e=>{ e.preventDefault(); colEl.classList.add('drag-over'); });
+    body.addEventListener('dragleave', ()=> colEl.classList.remove('drag-over'));
+    body.addEventListener('drop', e=>{
+      e.preventDefault(); colEl.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      const source = cards.find(x=>x.id===id);
+      if(!source || source.col===col.id) return;
+
+      if(source.col==='novo' && col.id==='agendamento'){
+        openVisitModal(source, {focusAgendamento:true});
+      } else if(source.col==='agendamento' && col.id==='visita'){
+        openVisitModal(source, {targetCol:'visita'});
+      } else {
+        moveCard(id, col.id);
+      }
+    });
+  });
+}
+
+function renderCard(cd){
+  const el = document.createElement('div');
+  el.className='card';
+  el.draggable = true;
+  el.dataset.id = cd.id;
+  const bg = colorFor(cd.name);
+  el.innerHTML = `
+    <div class="card-top">
+      <div class="avatar" style="background:${bg}">${initials(cd.name)}</div>
+      <div style="flex:1">
+        <div class="card-name">${cd.name}</div>
+      </div>
+      <div class="card-status" title="Opções">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg>
+      </div>
+    </div>
+    <div class="card-detail">
+      <div>${cd.line1}</div>
+      <div>${cd.line2}</div>
+    </div>
+    <div class="card-menu">
+      ${COLUMNS.filter(x=>x.id!==cd.col).map(x=>`<button data-move="${x.id}">Mover para ${x.title}</button>`).join('')}
+      <button class="danger" data-del="1">Remover contato</button>
+    </div>
+  `;
+
+  el.addEventListener('dragstart', e=>{
+    e.dataTransfer.setData('text/plain', cd.id);
+    el.classList.add('dragging');
+  });
+  el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+
+  el.addEventListener('click', e=>{
+    if(e.target.closest('.card-status') || e.target.closest('.card-menu')) return;
+    if(cd.col === 'negociacao'){
+      openContatoModal(cd);
+    } else {
+      openVisitModal(cd);
+    }
+  });
+
+  const statusBtn = el.querySelector('.card-status');
+  const menu = el.querySelector('.card-menu');
+  statusBtn.addEventListener('click', e=>{
+    e.stopPropagation();
+    document.querySelectorAll('.card-menu.open').forEach(m=> m!==menu && m.classList.remove('open'));
+    menu.classList.toggle('open');
+  });
+  menu.querySelectorAll('[data-move]').forEach(btn=>{
+    btn.addEventListener('click', e=>{ e.stopPropagation(); moveCard(cd.id, btn.dataset.move); menu.classList.remove('open'); });
+  });
+  menu.querySelector('[data-del]').addEventListener('click', e=>{
+    e.stopPropagation();
+    cards = cards.filter(x=>x.id!==cd.id);
+    render();
+    showToast(`${cd.name} removido do funil`);
+  });
+
+  return el;
+}
+
+document.addEventListener('click', ()=> document.querySelectorAll('.card-menu.open').forEach(m=>m.classList.remove('open')));
+
+function moveCard(id, colId){
+  const cd = cards.find(x=>x.id===id);
+  if(!cd || cd.col===colId) return;
+  cd.col = colId;
+  render();
+  const target = COLUMNS.find(x=>x.id===colId);
+  showToast(`${cd.name} movido para "${target.title}"`);
+}
+
+/* ---------- Search ---------- */
+document.getElementById('searchInput').addEventListener('input', e=>{
+  searchTerm = e.target.value.trim().toLowerCase();
+  render();
+});
+
+/* ---------- Cadastro modal ---------- */
+const overlay = document.getElementById('overlay');
+const AVATAR_ICON_SVG = `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>`;
+
+document.getElementById('addVisitorBtn').addEventListener('click', ()=>{
+  overlay.classList.add('open');
+  resetCadastroForm();
+});
+document.getElementById('cancelAdd').addEventListener('click', closeModal);
+document.getElementById('closeModalX').addEventListener('click', closeModal);
+overlay.addEventListener('click', e=>{ if(e.target===overlay) closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && overlay.classList.contains('open')) closeModal(); });
+
+function closeModal(){ overlay.classList.remove('open'); }
+
+function resetCadastroForm(){
+  overlay.querySelectorAll('input[type=text], input[type=email]').forEach(i=> i.value='');
+  overlay.querySelectorAll('select').forEach(s=> s.selectedIndex=0);
+  document.getElementById('sidebarTitle').textContent = 'Cadastro Visitante';
+  document.getElementById('avatarUpload').innerHTML = AVATAR_ICON_SVG;
+  document.getElementById('fPrimeiroNome').removeAttribute('data-manual');
+  document.querySelector('input[name=tipoPessoa][value=fisica]').checked = true;
+  applyPersonType('fisica');
+  switchTab('info');
+}
+
+/* Tabs */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> switchTab(btn.dataset.tab));
+});
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tab-panel').forEach(p=> p.hidden = p.dataset.panel!==tab);
+}
+
+/* Pessoa Física / Jurídica */
+document.querySelectorAll('input[name=tipoPessoa]').forEach(r=>{
+  r.addEventListener('change', ()=> applyPersonType(r.value));
+});
+function applyPersonType(type){
+  const isPJ = type==='juridica';
+  document.getElementById('lblNomeCompleto').textContent = isPJ ? 'Razão Social *' : 'Nome Completo *';
+  document.getElementById('lblPrimeiroNome').textContent = isPJ ? 'Nome Fantasia' : 'Primeiro Nome';
+  document.getElementById('lblCpf').textContent = isPJ ? 'CNPJ' : 'CPF';
+  document.getElementById('fNomeCompleto').placeholder = isPJ ? 'Razão social da empresa' : 'Nome completo do contato';
+}
+
+/* Mirror name into sidebar title + auto-fill first name */
+document.getElementById('fNomeCompleto').addEventListener('input', e=>{
+  const val = e.target.value.trim();
+  document.getElementById('sidebarTitle').textContent = val || 'Cadastro Visitante';
+  const pn = document.getElementById('fPrimeiroNome');
+  if(!pn.dataset.manual) pn.value = val.split(' ')[0] || '';
+});
+document.getElementById('fPrimeiroNome').addEventListener('input', e=>{ e.target.dataset.manual='1'; });
+
+/* Avatar upload */
+document.getElementById('avatarUpload').addEventListener('click', ()=> document.getElementById('avatarFile').click());
+document.getElementById('avatarFile').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=> { document.getElementById('avatarUpload').innerHTML = `<img src="${reader.result}" alt="Foto do contato">`; };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('configurarBtn').addEventListener('click', ()=> showToast('Configurações do cadastro em breve'));
+
+/* Save */
+document.getElementById('confirmAdd').addEventListener('click', ()=>{
+  const name = document.getElementById('fNomeCompleto').value.trim();
+  if(!name){
+    switchTab('info');
+    document.getElementById('fNomeCompleto').focus();
+    return;
+  }
+  const tel1 = document.getElementById('fTel1').value.trim();
+  const email = document.getElementById('fEmail').value.trim();
+  const responsavel = document.getElementById('fResponsavel').value;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0'), mm = String(now.getMinutes()).padStart(2,'0');
+  const line1 = tel1 ? `Tel: ${tel1}` : (email ? `E-mail: ${email}` : 'Cadastro manual');
+  const newCard = {id:c(), col:'novo', name, line1, line2:`Hoje, ${hh}:${mm}`, value:0};
+  if(responsavel){
+    const d = ensureDetails(newCard);
+    d.responsavel = responsavel;
+  }
+  cards.unshift(newCard);
+  render();
+  closeModal();
+  showToast(`${name} adicionado ao funil`);
+});
+
+/* ---------- Visit / card detail modal ---------- */
+const overlay2 = document.getElementById('overlay2');
+let currentCardId = null;
+let chipsState = [];
+let visitModalTargetCol = null;
+
+function isFutureDate(dateStr){
+  if(!dateStr) return false;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const target = new Date(dateStr+'T00:00:00');
+  return target.getTime() > today.getTime();
+}
+
+function ensureDetails(cd){
+  if(!cd.details){
+    cd.details = {
+      modalidades: [], origem:'Indicação', data:'', hora:'',
+      agendData:'', agendHora:'', tel1:'', tel2:'', obs:'',
+      interesse:'Médio', status:'Aguardando'
+    };
+  }
+  return cd.details;
+}
+
+function openVisitModal(cd, opts={}){
+  currentCardId = cd.id;
+  visitModalTargetCol = opts.targetCol || null;
+  const d = ensureDetails(cd);
+  document.getElementById('vId').textContent = '#'+cd.id.replace('id','').padEnd(6,'0').slice(0,6);
+  const av = document.getElementById('vAvatar');
+  av.style.background = colorFor(cd.name);
+  av.textContent = initials(cd.name);
+  document.getElementById('vName').textContent = cd.name;
+  const planoBox = document.getElementById('vPlanoEscolhido');
+  const planoNome = document.getElementById('vPlanoEscolhidoNome');
+  if(cd.col === 'fechado') {
+    const planoDaLinha = (cd.line1.match(/^Plano:\s*(.+)$/i) || [])[1];
+    const plano = cd.plano || planoDaLinha || (d.modalidades || []).join(', ') || 'Plano não informado';
+    planoNome.textContent = plano;
+    planoBox.hidden = false;
+  } else {
+    planoBox.hidden = true;
+    planoNome.textContent = '';
+  }
+  document.getElementById('vInteresse').value = d.interesse;
+  document.getElementById('vStatus').value = opts.presetStatus || d.status;
+  updateInteresseDot(d.interesse);
+  updateStatusColor(opts.presetStatus || d.status);
+  chipsState = [...d.modalidades];
+  renderChips();
+  document.getElementById('vOrigem').value = d.origem;
+  document.getElementById('vData').value = d.data;
+  document.getElementById('vHora').value = d.hora;
+  document.getElementById('vAgendData').value = d.agendData;
+  document.getElementById('vAgendHora').value = d.agendHora;
+  document.getElementById('vTel1').value = d.tel1;
+  document.getElementById('vTel2').value = d.tel2;
+  document.getElementById('vObs').value = d.obs;
+  document.getElementById('vObsCount').textContent = `${d.obs.length} de 1000`;
+
+  const banner = document.getElementById('vDragBanner');
+  if(opts.focusAgendamento){
+    banner.textContent = 'Confirme a data e hora da visita para mover este contato para "Agendamento de aulas".';
+    banner.style.display = 'block';
+  } else if(opts.targetCol==='visita'){
+    banner.textContent = 'O contato será movido para Aula Experimental. O status não será alterado automaticamente.';
+    banner.style.display = 'block';
+  } else {
+    banner.style.display = 'none';
+  }
+
+  overlay2.classList.add('open');
+  if(opts.focusAgendamento){
+    setTimeout(()=> document.getElementById('vAgendData').focus(), 50);
+  }
+}
+function closeModal2(){ overlay2.classList.remove('open'); visitModalTargetCol = null; }
+
+function renderChips(){
+  const box = document.getElementById('vChips');
+  box.innerHTML = chipsState.map((m,i)=>
+    `<span class="tag-chip">${m}<button data-i="${i}" type="button">×</button></span>`
+  ).join('');
+  box.querySelectorAll('button[data-i]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      chipsState.splice(Number(btn.dataset.i),1);
+      renderChips();
+    });
+  });
+}
+document.getElementById('vAddModalidade').addEventListener('change', e=>{
+  const val = e.target.value;
+  if(val && !chipsState.includes(val)) chipsState.push(val);
+  e.target.selectedIndex = 0;
+  renderChips();
+});
+
+function updateInteresseDot(level){
+  const colors = {Baixo:'var(--red)', 'Médio':'var(--amber)', Alto:'var(--green)'};
+  document.getElementById('vInteresseDot').style.background = colors[level] || 'var(--amber)';
+}
+document.getElementById('vInteresse').addEventListener('change', e=> updateInteresseDot(e.target.value));
+
+function updateStatusColor(status){
+  const colors = {Aguardando:'var(--blue-600)', Realizada:'var(--green)', Cancelada:'var(--red)'};
+  document.getElementById('vStatusWrap').style.color = colors[status] || 'var(--blue-600)';
+}
+document.getElementById('vStatus').addEventListener('change', e=> updateStatusColor(e.target.value));
+
+document.getElementById('vObs').addEventListener('input', e=>{
+  document.getElementById('vObsCount').textContent = `${e.target.value.length} de 1000`;
+});
+
+document.getElementById('vDotsMenu').addEventListener('click', ()=> showToast('Mais opções em breve'));
+document.getElementById('closeModal2X').addEventListener('click', closeModal2);
+document.getElementById('vVoltar').addEventListener('click', closeModal2);
+overlay2.addEventListener('click', e=>{ if(e.target===overlay2) closeModal2(); });
+
+document.getElementById('vSalvar').addEventListener('click', ()=>{
+  const cd = cards.find(x=>x.id===currentCardId);
+  if(!cd) return;
+  const d = ensureDetails(cd);
+  const colunaOriginal = cd.col;
+  const statusAnterior = d.status;
+  const colunaDestinoSolicitada = visitModalTargetCol;
+  d.modalidades = [...chipsState];
+  d.origem = document.getElementById('vOrigem').value;
+  d.data = document.getElementById('vData').value;
+  d.hora = document.getElementById('vHora').value;
+  d.agendData = document.getElementById('vAgendData').value;
+  d.agendHora = document.getElementById('vAgendHora').value;
+  d.tel1 = document.getElementById('vTel1').value.trim();
+  d.tel2 = document.getElementById('vTel2').value.trim();
+  d.obs = document.getElementById('vObs').value;
+  d.interesse = document.getElementById('vInteresse').value;
+  d.status = document.getElementById('vStatus').value;
+
+  if(d.agendData){
+    const [y,m,dd] = d.agendData.split('-');
+    cd.line1 = `Agendado: ${dd}/${m}/${y}${d.agendHora ? ' · '+d.agendHora : ''}`;
+  }
+  cd.line2 = 'Atualizado agora';
+
+  let moveMsg = '';
+  const hoje = new Date();
+  const hd = String(hoje.getDate()).padStart(2,'0'), hm = String(hoje.getMonth()+1).padStart(2,'0'), hy = hoje.getFullYear();
+
+  // O status define a etapa final independentemente da tabela em que foi alterado.
+  // Arrastar entre colunas, por si só, continua sem alterar o status.
+  if(d.status==='Cancelada'){
+    cd.col = 'perda';
+    cd.line1 = 'Motivo: Aula experimental cancelada';
+    cd.line2 = `Perdido em: ${hd}/${hm}/${hy}`;
+    moveMsg = ` — movido para "Perda"`;
+  } else if(d.status==='Realizada'){
+    cd.col = 'negociacao';
+    cd.line1 = `Aula experimental realizada: ${hd}/${hm}/${hy}`;
+    cd.line2 = 'Pronto para negociação';
+    moveMsg = ` — movido para "Negociação"`;
+  } else if(colunaDestinoSolicitada==='visita' && colunaOriginal!=='visita'){
+    cd.col = 'visita';
+    cd.line1 = d.agendData ? (()=>{ const [y,m,dd]=d.agendData.split('-'); return `Aula experimental agendada: ${dd}/${m}/${y}${d.agendHora ? ' · '+d.agendHora : ''}`; })() : 'Aula experimental';
+    moveMsg = ` — movido para "Aula Experimental"; status mantido`;
+  } else if(colunaOriginal==='novo' && d.agendData){
+    cd.col = 'agendamento';
+  } else if(colunaOriginal==='visita' && isFutureDate(d.agendData)){
+    cd.col = 'agendamento';
+    d.status = 'Aguardando';
+    document.getElementById('vStatus').value = 'Aguardando';
+    const [y,m,dd] = d.agendData.split('-');
+    cd.line1 = `Agendado: ${dd}/${m}/${y}${d.agendHora ? ' · '+d.agendHora : ''}`;
+    moveMsg = ` — data futura, movido de volta para "Agendamento de aulas"`;
+  }
+
+  render();
+  closeModal2();
+  showToast(`Visita de ${cd.name} atualizada${moveMsg}`);
+});
+
+document.getElementById('vExcluir').addEventListener('click', ()=>{
+  const cd = cards.find(x=>x.id===currentCardId);
+  if(!cd) return;
+  cards = cards.filter(x=>x.id!==currentCardId);
+  render();
+  closeModal2();
+  showToast(`${cd.name} removido do funil`);
+});
+
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && overlay2.classList.contains('open')) closeModal2(); });
+
+/* ---------- WhatsApp contact modal (Negociação) ---------- */
+const overlay3 = document.getElementById('overlay3');
+let currentContatoCardId = null;
+
+function openContatoModal(cd){
+  currentContatoCardId = cd.id;
+  const d = ensureDetails(cd);
+  const av = document.getElementById('ctAvatar');
+  av.style.background = colorFor(cd.name);
+  av.textContent = initials(cd.name);
+  document.getElementById('ctName').textContent = cd.name;
+
+  document.querySelector('input[name=ctModo][value=agora]').checked = true;
+  document.getElementById('ctAgendarRow').hidden = true;
+  document.getElementById('ctData').value = '';
+  document.getElementById('ctHora').value = '';
+  document.getElementById('ctMotivo').value = '';
+  document.getElementById('ctCelular').value = d.tel1 || '';
+  document.getElementById('ctPrioridade').value = 'Normal';
+  document.getElementById('ctMensagem').value = '';
+  document.getElementById('ctObs').value = '';
+  document.getElementById('ctMsgCount').textContent = '0 de 500';
+  document.getElementById('ctObsCount').textContent = '0 de 500';
+  document.getElementById('ctMotivoPanel').hidden = true;
+
+  overlay3.classList.add('open');
+}
+function closeContatoModal(){ overlay3.classList.remove('open'); }
+
+document.querySelectorAll('input[name=ctModo]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    document.getElementById('ctAgendarRow').hidden = document.querySelector('input[name=ctModo]:checked').value !== 'agendar';
+  });
+});
+
+document.getElementById('ctSelecionarMotivo').addEventListener('click', e=>{
+  e.stopPropagation();
+  const panel = document.getElementById('ctMotivoPanel');
+  panel.hidden = !panel.hidden;
+});
+document.getElementById('ctMotivoPanel').querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.getElementById('ctMotivo').value = btn.dataset.v;
+    document.getElementById('ctMotivoPanel').hidden = true;
+  });
+});
+document.addEventListener('click', e=>{
+  const panel = document.getElementById('ctMotivoPanel');
+  if(!panel.hidden && !e.target.closest('.motivo-field')) panel.hidden = true;
+});
+
+document.getElementById('ctMensagem').addEventListener('input', e=>{
+  document.getElementById('ctMsgCount').textContent = `${e.target.value.length} de 500`;
+});
+document.getElementById('ctObs').addEventListener('input', e=>{
+  document.getElementById('ctObsCount').textContent = `${e.target.value.length} de 500`;
+});
+
+document.getElementById('closeModal3X').addEventListener('click', closeContatoModal);
+document.getElementById('ctVoltar').addEventListener('click', closeContatoModal);
+overlay3.addEventListener('click', e=>{ if(e.target===overlay3) closeContatoModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && overlay3.classList.contains('open')) closeContatoModal(); });
+
+document.getElementById('ctSalvar').addEventListener('click', ()=>{
+  const cd = cards.find(x=>x.id===currentContatoCardId);
+  if(!cd) return;
+
+  const modo = document.querySelector('input[name=ctModo]:checked').value;
+  const motivo = document.getElementById('ctMotivo').value.trim();
+  const celular = document.getElementById('ctCelular').value.trim();
+  const mensagem = document.getElementById('ctMensagem').value.trim();
+  const data = document.getElementById('ctData').value;
+  const hora = document.getElementById('ctHora').value;
+
+  if(!motivo){ document.getElementById('ctMotivo').focus(); return; }
+  if(!celular){ document.getElementById('ctCelular').focus(); return; }
+  if(!mensagem){ document.getElementById('ctMensagem').focus(); return; }
+  if(modo==='agendar' && (!data || !hora)){
+    document.getElementById(!data ? 'ctData' : 'ctHora').focus();
+    return;
+  }
+
+  const d = ensureDetails(cd);
+  d.tel1 = celular || d.tel1;
+  cd.line2 = 'Atualizado agora';
+
+  render();
+  closeContatoModal();
+  if(modo==='agendar'){
+    const [y,m,dd] = data.split('-');
+    showToast(`Mensagem para ${cd.name} agendada para ${dd}/${m}/${y} às ${hora}`);
+  } else {
+    showToast(`Mensagem enviada para ${cd.name} via WhatsApp`);
+  }
+});
+
+/* ---------- Toast ---------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+
+render();
+</script>
+</body>
+</html>
